@@ -1,5 +1,5 @@
-backend/node_modules
-backend/package-lock.json
-backend/.env
+mockPriceGeneratorBackend/node_modules
+mockPriceGeneratorBackend/package-lock.json
+mockPriceGeneratorBackend/.env
 
 
