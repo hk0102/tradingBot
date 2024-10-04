@@ -1,9 +1,7 @@
 import io from 'socket.io-client';
 import express from "express";
 import dotenv from "dotenv";
-const priceGeneratorSocket = io('http://localhost:7703');
 
-console.log("priceGeneratorSocket",priceGeneratorSocket)
 
 import http from 'http'
 import {Server as socketIo }  from 'socket.io';
@@ -12,39 +10,49 @@ import {Server as socketIo }  from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 const io2 =  new socketIo(server);
-
-
-
-let stockPrice = 100;  
-let balance = 10000;   
-let holdings = 0;      
-let tradingHistory = [];
-
-priceGeneratorSocket.on('connect', () => {
-  console.log('Connected to the Price Generator Server.');
+export const priceGeneratorSocket = io('http://localhost:7703', {
+  cors: {
+    origin: "*", // Allow all origins, can be configured to specific origins
+    methods: ["GET", "POST"]
+  }
 });
 
+
+
+
+
+let balance = 10000;  
+let holdings = 0;     
+let buyingPrice = 100;  // Price at which the bot last bought a share
+let profit = 0;       // Accumulated profit
+let tradingHistory = [];  // History of trades
+let stockPrice = 100;
+
+function getCurrentTimestamp() {
+  const now = new Date();
+  return now.toISOString().replace('T', ' ').split('.')[0]; // Format: YYYY-MM-DD HH:mm:ss
+}
+
 priceGeneratorSocket.on('stockPriceUpdate', (data) => {
-    stockPrice = data.stockPrice;
-    console.log(stockPrice)
-    tradeBot();
-     // Update the stock price state
-  });
+  stockPrice = data.stockPrice;
+  tradeBot();
+});
 
-
-  function tradeBot() {
-    if (holdings === 0 && stockPrice <= 98) {
-      // Buy condition
-      const numShares = Math.floor(balance / stockPrice);
-      balance -= numShares * stockPrice;
-      holdings += numShares;
-      tradingHistory.push({ action: 'BUY', shares: numShares, price: stockPrice });
-      console.log(`Bot bought ${numShares} shares at $${stockPrice}`);
-    } else if (holdings > 0 && stockPrice >= 103) {
-      // Sell condition
-      balance += holdings * stockPrice;
-      tradingHistory.push({ action: 'SELL', shares: holdings, price: stockPrice });
-      console.log(`Bot sold ${holdings} shares at $${stockPrice}`);
-      holdings = 0;
-    }
+function tradeBot() {
+  
+  if (holdings === 1 && parseInt(stockPrice,10) > parseInt(buyingPrice,10)) {
+    profit = stockPrice - buyingPrice;  
+    balance += profit; 
+    holdings = 0;  
+    tradingHistory.push({ action: 'SELL', price: stockPrice, time : getCurrentTimestamp() });
+    console.log(`Bot sold 1 share at Rs${stockPrice}. Profit: Rs${profit.toFixed(2)}, Balance: Rs${balance.toFixed(2)}`);
+  } 
+  else if (holdings === 0 && parseInt(stockPrice,10) < parseInt(buyingPrice,10))
+    {
+    buyingPrice = stockPrice;  
+    holdings = 1;  
+    balance -= buyingPrice
+    tradingHistory.push({ action: 'BUY', price: buyingPrice, time: getCurrentTimestamp()});
+    console.log(`Bot bought 1 share at Rs${buyingPrice}. Balance: Rs${balance.toFixed(2)}`);
   }
+}
