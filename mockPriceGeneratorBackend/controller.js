@@ -5,12 +5,7 @@ import http from 'http'
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io =  new socketIo(server, {
-  cors: {
-    origin: "*",  // Allow all origins; you can set a specific frontend URL here
-    methods: ["GET", "POST"]
-  }
-});
+const io =  new socketIo(server);
 
 let stockPrice = 100; // Initial stock price
 
@@ -50,6 +45,6 @@ io.on('connection', (socket) => {
 
   const PORT = process.env.PORT || 80;
 server.listen(PORT, () => {
-    console.log(`Trading bot listening on port ${PORT}`);
+    console.log(`Mock Price generater bot listening on port ${PORT}`);
 });
   
