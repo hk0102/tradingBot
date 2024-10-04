@@ -10,7 +10,3 @@ const io =  new socketIo(server);
 app.use(express.json());
 app.use(router);
 
-const PORT = process.env.PORT || 80;
-server.listen(PORT, () => {
-    console.log(`Trading bot listening on port ${PORT}`);
-});

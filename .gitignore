@@ -2,4 +2,8 @@ mockPriceGeneratorBackend/node_modules
 mockPriceGeneratorBackend/package-lock.json
 mockPriceGeneratorBackend/.env
 
+tradingBotBackend/.env
+tradingBotBackend/node_modules
+tradingBotBackend/package-lock.json
+
 

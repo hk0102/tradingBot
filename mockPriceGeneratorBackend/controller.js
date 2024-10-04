@@ -5,7 +5,12 @@ import http from 'http'
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io =  new socketIo(server);
+const io =  new socketIo(server, {
+  cors: {
+    origin: "*",  // Allow all origins; you can set a specific frontend URL here
+    methods: ["GET", "POST"]
+  }
+});
 
 let stockPrice = 100; // Initial stock price
 
@@ -33,3 +38,18 @@ setInterval(() => {
 export const getRealTimeStockPrice = (req, res)   => {
     res.status(200).json({ "stock-price" : stockPrice });
   };
+
+io.on('connection', (socket) => {
+    console.log('New client connected');
+    socket.emit('stockPriceUpdate', { stockPrice });
+    socket.on('disconnect', () => {
+      console.log('Client disconnected');
+    });
+  });
+
+
+  const PORT = process.env.PORT || 80;
+server.listen(PORT, () => {
+    console.log(`Trading bot listening on port ${PORT}`);
+});
+  
