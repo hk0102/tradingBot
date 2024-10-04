@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import express from "express";
 import dotenv from "dotenv";
-
+dotenv.config();
 
 import http from 'http'
 import {Server as socketIo }  from 'socket.io';
@@ -10,12 +10,7 @@ import {Server as socketIo }  from 'socket.io';
 const app = express();
 const server = http.createServer(app);
 const io2 =  new socketIo(server);
-export const priceGeneratorSocket = io('http://localhost:7703', {
-  cors: {
-    origin: "*", // Allow all origins, can be configured to specific origins
-    methods: ["GET", "POST"]
-  }
-});
+export const priceGeneratorSocket = io(`http://localhost:${process.env.MOCKAPI_PORT}`);
 
 
 
@@ -39,7 +34,7 @@ priceGeneratorSocket.on('stockPriceUpdate', (data) => {
 });
 
 function tradeBot() {
-  
+  const currTime = getCurrentTimestamp();
   if (holdings === 1 && parseInt(stockPrice,10) > parseInt(buyingPrice,10)) {
     profit = stockPrice - buyingPrice;  
     balance += profit; 
