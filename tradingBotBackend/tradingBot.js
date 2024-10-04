@@ -55,4 +55,17 @@ function tradeBot() {
     tradingHistory.push({ action: 'BUY', price: buyingPrice, time: getCurrentTimestamp()});
     console.log(`Bot bought 1 share at Rs${buyingPrice}. Balance: Rs${balance.toFixed(2)}`);
   }
+  else if (holdings === 0 && parseInt(stockPrice,10) > parseInt(buyingPrice,10))
+    {
+    buyingPrice = stockPrice;  
+    holdings = 1;  
+    balance -= buyingPrice
+    tradingHistory.push({ action: 'BUY', price: buyingPrice, time: getCurrentTimestamp()});
+    console.log(`Bot bought 1 share at Rs${buyingPrice}. Balance: Rs${balance.toFixed(2)}`);
+  }
 }
+
+
+export const getSummaryReport = (req, res)   => {
+  res.status(200).json(tradingHistory);
+};

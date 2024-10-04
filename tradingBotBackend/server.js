@@ -5,6 +5,7 @@ import http from 'http'
 dotenv.config();
 import {priceGeneratorSocket} from "./tradingBot.js"
 import io from 'socket.io-client';
+import router from "./route.js";
 
 
 
@@ -12,6 +13,7 @@ import io from 'socket.io-client';
 
 const app = express();
 app.use(express.json());
+app.use(router)
 
 const server = http.createServer(app);
 
