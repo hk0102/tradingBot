@@ -31,8 +31,18 @@ A basic stock trading bot built with Node.js and Socket.IO that simulates tradin
 To get a copy of this project up and running on your local machine, follow these steps:
 
 1. Clone the repository
-2. Create .env file with port
-3. Run npm i inside both the directory
+     
+     ```bash
+     git clone https://github.com/hk0102/tradingBot.git
+
+2. Navigate to directory
+
+    ```bash
+    cd tradingBot
+
+3. Create .env file with port
+
+4. Run npm i inside both the directory
 
 ## API Endpoints
 
